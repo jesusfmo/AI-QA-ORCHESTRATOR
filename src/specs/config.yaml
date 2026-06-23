@@ -1,0 +1,38 @@
+schema: spec-driven
+
+context: |
+  Project: AI Orchestration — E2E automation suite for OrangeHRM authentication.
+  Approach: Specification-Driven Development (SDD).
+  Stack: Python · Selenium · Behave (BDD) · OpenSpec 1.0.0.
+  Style: Ponytail — maximum efficiency, zero redundancy.
+  Target: OrangeHRM demo (https://opensource-demo.orangehrmlive.com).
+  Source contract: POST /api/v1/auth/login (OrangeHRM Authentication API v1.0.0).
+  The contract describes a JSON API, but verification happens over the UI because
+  the real user flow goes through the login form.
+
+rules:
+  specs:
+    - Write requirements as RFC 2119 statements (SHALL / MUST).
+    - Every scenario uses GIVEN/WHEN/THEN and is independently testable.
+    - Each requirement traces to an SDD-ID and to an OpenSpec contract clause.
+    - Steps describe business behavior (what), never implementation (how).
+
+  # Ponytail style contract — applies to ALL generated code.
+  code:
+    - "P1 Single selector: each locator declared exactly once, in the Page Object. No By.* in any step."
+    - "P2 Minimal public action: the POM exposes business verbs (authenticate), not per-field micro-operations."
+    - "P3 Private helper for repeated patterns: the find->clear->send_keys pattern lives in one private method."
+    - "P4 Explicit waits, never sleep: deterministic synchronization via WebDriverWait. time.sleep is banned."
+    - "P5 Comment only if it justifies: '# ponytail: [reason]' exclusively when the why is not readable in the what."
+    - "P6 One assert, one oracle: each Then step validates exactly one contract assertion."
+
+  # Reject in code review (Ponytail anti-patterns):
+  anti_patterns:
+    - "time.sleep(n) -> violates P4. Use WebDriverWait."
+    - "By.* inside a step -> violates P1. The selector lives in the POM."
+    - "A step that opens/clears/types a field -> violates P2/P3. That is authenticate()."
+    - "A comment restating the code (# click the button) -> violates P5."
+    - "A Then with two or more asserts -> violates P6. Split into atomic steps."
+
+  tasks:
+    - Keep tasks small and implementation-ready — one artifact per task.
